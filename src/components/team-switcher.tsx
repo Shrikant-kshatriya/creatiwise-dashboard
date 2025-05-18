@@ -14,6 +14,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
   useSidebar,
 } from "../components/ui/sidebar"
 
@@ -36,9 +37,7 @@ export function TeamSwitcher({
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <div className="text-center text-3xl font-extrabold mb-6">
-          <h1>abun</h1>
-        </div>
+        <SidebarTrigger className="w-full flex items-center justify-center mb-6" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
@@ -46,7 +45,7 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-10 rounded-full border-2"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex rounded-full size-6 items-center justify-center">
-                <activeTeam.logo className="size-3" />
+                <activeTeam.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">  
                 <span className="truncate font-medium">{activeTeam.name}</span>
