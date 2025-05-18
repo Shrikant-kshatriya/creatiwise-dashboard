@@ -1,36 +1,33 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  ScrollText,
+  UserRound,
+  MessageCircle,
+  BellRing,
+  Info,
+  CircleDollarSign,
+  Star,
+  Plug,
+  Link2,
+  Cable,
+  Newspaper
+
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -50,108 +47,107 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Articles",
       url: "#",
-      icon: SquareTerminal,
+      icon: ScrollText,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Create Article",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Generated Articles",
           url: "#",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
+          title: "Keyword Projects",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "AI Keyword to Article",
           url: "#",
         },
         {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
+          title: "Steal Competitor Keyword",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Import Keyword from GSC",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Manual Keyword to Article",
           url: "#",
         },
         {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
+          title: "Bulk Keyword to Article",
           url: "#",
         },
         {
-          title: "Team",
+          title: "Longtail Keyword to Article",
           url: "#",
         },
         {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
+          title: "Article Settings",
           url: "#",
         },
       ],
     },
   ],
-  projects: [
+  navsubs: [
     {
-      name: "Design Engineering",
+      name: "Auto Blog",
       url: "#",
-      icon: Frame,
+      icon: Newspaper,
     },
     {
-      name: "Sales & Marketing",
+      name: "Internal Links",
       url: "#",
-      icon: PieChart,
+      icon: Cable,
     },
     {
-      name: "Travel",
+      name: "Free Backlinks",
       url: "#",
-      icon: Map,
+      icon: Link2,
+    },
+    {
+      name: "Integrations",
+      url: "#",
+      icon: Plug,
+    },
+    {
+      name: "Subscription",
+      url: "#",
+      icon: Star,
+    },
+    {
+      name: "Affiliate Program",
+      url: "#",
+      icon: CircleDollarSign,
+    },
+    {
+      name: "Help Center",
+      url: "#",
+      icon: Info,
+    },
+    {
+      name: "Updates",
+      url: "#",
+      icon: BellRing,
+    },
+    {
+      name: "Live Chat Support",
+      url: "#",
+      icon: MessageCircle,
     },
   ],
+  navFooter: 
+    {
+      name: "Profile",
+      url: "#",
+      icon: UserRound,
+    }
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -161,13 +157,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain} subs={data.navsubs} footer={data.navFooter} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail /> 
     </Sidebar>
   )
 }
