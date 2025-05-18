@@ -1,10 +1,10 @@
-import * as React from "react"
+import * as React from "react";
 import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import { FaWordpress } from "react-icons/fa";
 import {
   type ColumnDef,
@@ -20,19 +20,19 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@tanstack/react-table";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -40,15 +40,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { ChevronDown } from "lucide-react"
-import moment from "moment"
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChevronDown } from "lucide-react";
+import moment from "moment";
+import { Skeleton } from "./ui/skeleton";
 
 export const schema = z.object({
   id: z.number(),
@@ -59,7 +55,7 @@ export const schema = z.object({
   createdOn: z.date(),
   action: z.string(),
   publish: z.string(),
-})
+});
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
@@ -89,16 +85,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-      accessorKey: "title",
-      header: "Article Title",
-      cell: ({ row }) => (
-        <div className="whitespace-normal break-words max-w-xs">
-          <Label className="px-1.5 w-full">
-            {row.original.title}
-          </Label>
-        </div>
-      ),
-    },
+    accessorKey: "title",
+    header: "Article Title",
+    cell: ({ row }) => (
+      <div className="whitespace-normal break-words max-w-xs">
+        <Label className="px-1.5 w-full">{row.original.title}</Label>
+      </div>
+    ),
+  },
   {
     accessorKey: "keyword",
     header: "Keyword[traffic]",
@@ -111,53 +105,50 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "words",
     header: "Words",
-    cell: ({ row }) => (
-      <Label className="px-1.5">
-        {row.original.words}
-      </Label>
-    ),
-    },
-    {
+    cell: ({ row }) => <Label className="px-1.5">{row.original.words}</Label>,
+  },
+  {
     accessorKey: "createdOn",
     header: "Created On",
     cell: ({ row }) => {
       const createdOn = row.original.createdOn;
       let displayValue = "--";
       if (createdOn) {
-      const now = moment();
-      const created = moment(createdOn);
-      const diffMinutes = now.diff(created, "minutes");
-      const diffDays = now.diff(created, "days");
-      if (diffMinutes < 60) {
-        displayValue = diffMinutes <= 1 ? "a min ago" : `${diffMinutes} min ago`;
-      } else if (diffDays < 1) {
-        const diffHours = now.diff(created, "hours");
-        displayValue = diffHours <= 1 ? "1 hour ago" : `${diffHours} hours ago`;
-      } else if (diffDays < 2) {
-        displayValue = diffDays === 1 ? "1 day ago" : `${diffDays} days ago`;
-      } else {
-        displayValue = created.local().format("LL");
-      }
+        const now = moment();
+        const created = moment(createdOn);
+        const diffMinutes = now.diff(created, "minutes");
+        const diffDays = now.diff(created, "days");
+        if (diffMinutes < 60) {
+          displayValue =
+            diffMinutes <= 1 ? "a min ago" : `${diffMinutes} min ago`;
+        } else if (diffDays < 1) {
+          const diffHours = now.diff(created, "hours");
+          displayValue =
+            diffHours <= 1 ? "1 hour ago" : `${diffHours} hours ago`;
+        } else if (diffDays < 2) {
+          displayValue = diffDays === 1 ? "1 day ago" : `${diffDays} days ago`;
+        } else {
+          displayValue = created.local().format("LL");
+        }
       }
       return (
-      <Label className="px-1.5 flex items-center justify-center">
-        {displayValue}
-      </Label>
+        <Label className="px-1.5 flex items-center justify-center">
+          {displayValue}
+        </Label>
       );
     },
-    },
-    {
+  },
+  {
     id: "action",
     header: "Action",
     cell: () => (
       <div className="flex items-center justify-center">
-
-      <Button
-        variant="outline"
-        className="data-[state=open]:bg-muted text-green-500 border border-green-500 "
-      >
-        <span className="px-6">View</span>
-      </Button>
+        <Button
+          variant="outline"
+          className="data-[state=open]:bg-muted text-green-500 border border-green-500 "
+        >
+          <span className="px-6">View</span>
+        </Button>
       </div>
     ),
   },
@@ -165,50 +156,54 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     id: "publish",
     header: "Publish",
     cell: () => (
-      <div className="flex items-center justify-center"> 
+      <div className="flex items-center justify-center">
         <Button variant="ghost" size="lg" className="flex items-center gap-2">
           <span className="text-2xl">
-            <FaWordpress className="text-blue-500"/>
+            <FaWordpress className="text-blue-500" />
           </span>
           <ChevronDown />
         </Button>
       </div>
     ),
   },
-]
+];
 
 function Row({ row }: { row: Row<z.infer<typeof schema>> }) {
-
   return (
-    <TableRow
-      className="relative z-0"
-    >
+    <TableRow className="relative z-0">
       {row.getVisibleCells().map((cell) => (
         <TableCell key={cell.id}>
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCell>
       ))}
     </TableRow>
-  )
+  );
 }
 
 export function DataTable({
   data: initialData,
 }: {
-  data: z.infer<typeof schema>[]
+  data: z.infer<typeof schema>[];
 }) {
-  const [searchValue, setSearchValue] = React.useState("")
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [searchValue, setSearchValue] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500); // Simulated load
+    return () => clearTimeout(timer);
+  }, []);
+
+  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
+  });
 
   // Filter data based on searchValue for title and keyword
   const filteredData = React.useMemo(() => {
@@ -244,7 +239,7 @@ export function DataTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
   return (
     <Tabs
@@ -264,23 +259,29 @@ export function DataTable({
             <SelectValue placeholder="Select a view" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Generated Articles">Generated Articles</SelectItem>
-            <SelectItem value="Published Articles">Published Articles</SelectItem>
-            <SelectItem value="Scheduled Articles">Scheduled Articles</SelectItem>
+            <SelectItem value="Generated Articles">
+              Generated Articles
+            </SelectItem>
+            <SelectItem value="Published Articles">
+              Published Articles
+            </SelectItem>
+            <SelectItem value="Scheduled Articles">
+              Scheduled Articles
+            </SelectItem>
             <SelectItem value="Archived Articles">Archived Articles</SelectItem>
           </SelectContent>
         </Select>
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex items-center justify-center mx-auto gap-2">
-          <TabsTrigger value="Generated Articles">Generated Articles</TabsTrigger>
+          <TabsTrigger value="Generated Articles">
+            Generated Articles
+          </TabsTrigger>
           <TabsTrigger value="Published Articles">
             Published Articles
           </TabsTrigger>
           <TabsTrigger value="Scheduled Articles">
             Scheduled Articles
           </TabsTrigger>
-          <TabsTrigger value="Archived Articles">
-            Archived Articles
-          </TabsTrigger>
+          <TabsTrigger value="Archived Articles">Archived Articles</TabsTrigger>
         </TabsList>
         {/* search */}
         <div>
@@ -297,24 +298,26 @@ export function DataTable({
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg">
-          
-            <Table>
-                <TableHeader className="sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+          <Table>
+            <TableHeader className="sticky top-0 z-10">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     // Use the column id to check for title/keyword[traffic]
                     const key = header.column.id?.toLowerCase() || "";
                     const isTitle = key === "title";
                     const isKeywordTraffic =
-                      key === "keyword" ||
-                      key === "keyword[traffic]";
+                      key === "keyword" || key === "keyword[traffic]";
                     const className =
                       isTitle || isKeywordTraffic
                         ? "font-bold"
                         : "font-bold text-center";
                     return (
-                      <TableHead className={className} key={header.id} colSpan={header.colSpan}>
+                      <TableHead
+                        className={className}
+                        key={header.id}
+                        colSpan={header.colSpan}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -324,26 +327,36 @@ export function DataTable({
                       </TableHead>
                     );
                   })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody className="**:data-[slot=table-cell]:first:w-8">
+              {isLoading ? (
+                Array.from({ length: 10 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {columns.map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-4 w-full rounded" />
+                      </TableCell>
+                    ))}
                   </TableRow>
-                ))}
-                </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <Row key={row.id} row={row} />
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                ))
+              ) : table.getRowModel().rows?.length ? (
+                table
+                  .getRowModel()
+                  .rows.map((row) => <Row key={row.id} row={row} />)
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
 
         <div className="flex items-center justify-between px-4">
@@ -359,7 +372,7 @@ export function DataTable({
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value))
+                  table.setPageSize(Number(value));
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -440,5 +453,5 @@ export function DataTable({
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-  )
+  );
 }
