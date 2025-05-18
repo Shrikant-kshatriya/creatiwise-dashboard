@@ -4,10 +4,8 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
-  IconDotsVertical,
-  IconLoader,
 } from "@tabler/icons-react"
+import { FaWordpress } from "react-icons/fa";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -23,18 +21,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { toast } from "sonner"
 import { z } from "zod"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -58,17 +47,19 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { ChevronDown } from "lucide-react"
+import moment from "moment"
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
-  status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+  title: z.string(),
+  keyword: z.string(),
+  traffic: z.number(),
+  words: z.number(),
+  createdOn: z.date(),
+  action: z.string(),
+  publish: z.string(),
 })
-
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
@@ -98,136 +89,90 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: "Section Type",
+      accessorKey: "title",
+      header: "Article Title",
+      cell: ({ row }) => (
+        <div className="whitespace-normal break-words max-w-xs">
+          <Label className="px-1.5 w-full">
+            {row.original.title}
+          </Label>
+        </div>
+      ),
+    },
+  {
+    accessorKey: "keyword",
+    header: "Keyword[traffic]",
     cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.type}
-        </Badge>
+      <Label className="px-1.5">
+        {`${row.original.keyword}[${row.original.traffic}]`}
+      </Label>
+    ),
+  },
+  {
+    accessorKey: "words",
+    header: "Words",
+    cell: ({ row }) => (
+      <Label className="px-1.5">
+        {row.original.words}
+      </Label>
+    ),
+    },
+    {
+    accessorKey: "createdOn",
+    header: "Created On",
+    cell: ({ row }) => {
+      const createdOn = row.original.createdOn;
+      let displayValue = "--";
+      if (createdOn) {
+      const now = moment();
+      const created = moment(createdOn);
+      const diffMinutes = now.diff(created, "minutes");
+      const diffDays = now.diff(created, "days");
+      if (diffMinutes < 60) {
+        displayValue = diffMinutes <= 1 ? "a min ago" : `${diffMinutes} min ago`;
+      } else if (diffDays < 1) {
+        const diffHours = now.diff(created, "hours");
+        displayValue = diffHours <= 1 ? "1 hour ago" : `${diffHours} hours ago`;
+      } else if (diffDays < 2) {
+        displayValue = diffDays === 1 ? "1 day ago" : `${diffDays} days ago`;
+      } else {
+        displayValue = created.local().format("LL");
+      }
+      }
+      return (
+      <Label className="px-1.5 flex items-center justify-center">
+        {displayValue}
+      </Label>
+      );
+    },
+    },
+    {
+    id: "action",
+    header: "Action",
+    cell: () => (
+      <div className="flex items-center justify-center">
+
+      <Button
+        variant="outline"
+        className="data-[state=open]:bg-muted text-green-500 border border-green-500 "
+      >
+        <span className="px-6">View</span>
+      </Button>
       </div>
     ),
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Done" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : (
-          <IconLoader />
-        )}
-        {row.original.status}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "target",
-    header: () => <div className="w-full text-right">Target</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          })
-        }}
-      >
-        <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-          Target
-        </Label>
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-          defaultValue={row.original.target}
-          id={`${row.original.id}-target`}
-        />
-      </form>
-    ),
-  },
-  {
-    accessorKey: "limit",
-    header: () => <div className="w-full text-right">Limit</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          })
-        }}
-      >
-        <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-          Limit
-        </Label>
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-          defaultValue={row.original.limit}
-          id={`${row.original.id}-limit`}
-        />
-      </form>
-    ),
-  },
-  {
-    accessorKey: "reviewer",
-    header: "Reviewer",
-    cell: ({ row }) => {
-      const isAssigned = row.original.reviewer !== "Assign reviewer"
-
-      if (isAssigned) {
-        return row.original.reviewer
-      }
-
-      return (
-        <>
-          <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-            Reviewer
-          </Label>
-          <Select>
-            <SelectTrigger
-              className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-              size="sm"
-              id={`${row.original.id}-reviewer`}
-            >
-              <SelectValue placeholder="Assign reviewer" />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-              <SelectItem value="Jamik Tashpulatov">
-                Jamik Tashpulatov
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </>
-      )
-    },
-  },
-  {
-    id: "actions",
+    id: "publish",
+    header: "Publish",
     cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center justify-center"> 
+        <Button variant="ghost" size="lg" className="flex items-center gap-2">
+          <span className="text-2xl">
+            <FaWordpress className="text-blue-500"/>
+          </span>
+          <ChevronDown />
+        </Button>
+      </div>
     ),
   },
 ]
@@ -236,8 +181,7 @@ function Row({ row }: { row: Row<z.infer<typeof schema>> }) {
 
   return (
     <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      className="relative z-0"
     >
       {row.getVisibleCells().map((cell) => (
         <TableCell key={cell.id}>
@@ -253,7 +197,6 @@ export function DataTable({
 }: {
   data: z.infer<typeof schema>[]
 }) {
-  const [data, setData] = React.useState(() => initialData)
   const [searchValue, setSearchValue] = React.useState("")
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -267,8 +210,19 @@ export function DataTable({
     pageSize: 10,
   })
 
+  // Filter data based on searchValue for title and keyword
+  const filteredData = React.useMemo(() => {
+    if (!searchValue.trim()) return initialData;
+    const lower = searchValue.toLowerCase();
+    return initialData.filter(
+      (row) =>
+        row.title.toLowerCase().includes(lower) ||
+        row.keyword.toLowerCase().includes(lower)
+    );
+  }, [initialData, searchValue]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     state: {
       sorting,
@@ -334,7 +288,7 @@ export function DataTable({
             placeholder="Search for Title and Keyword"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className="w-[150px] lg:w-[250px]"
+            className="w-[150px] lg:w-[250px] h-8 mt-3"
           />
         </div>
       </div>
@@ -342,27 +296,37 @@ export function DataTable({
         value="Generated Articles"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
-        <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-lg">
           
             <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
+                <TableHeader className="sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
+                  {headerGroup.headers.map((header) => {
+                    // Use the column id to check for title/keyword[traffic]
+                    const key = header.column.id?.toLowerCase() || "";
+                    const isTitle = key === "title";
+                    const isKeywordTraffic =
+                      key === "keyword" ||
+                      key === "keyword[traffic]";
+                    const className =
+                      isTitle || isKeywordTraffic
+                        ? "font-bold"
+                        : "font-bold text-center";
+                    return (
+                      <TableHead className={className} key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                   </TableRow>
                 ))}
-              </TableHeader>
+                </TableHeader>
               <TableBody className="**:data-[slot=table-cell]:first:w-8">
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
@@ -372,7 +336,7 @@ export function DataTable({
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 text-center"
+                      className="h-24"
                     >
                       No results.
                     </TableCell>
@@ -390,7 +354,7 @@ export function DataTable({
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
+                Articles per page
               </Label>
               <Select
                 value={`${table.getState().pagination.pageSize}`}
@@ -478,5 +442,3 @@ export function DataTable({
     </Tabs>
   )
 }
-
-

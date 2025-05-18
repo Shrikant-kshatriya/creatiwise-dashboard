@@ -2,7 +2,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { DataTable } from "../components/data-table";
 import { SidebarInset, SidebarProvider } from "../components/ui/sidebar";
 
-import data from "../app/dashboard/data.json";
+import data from "@/dummy/articledata";
 
 export default function Dashboard() {
   return (
